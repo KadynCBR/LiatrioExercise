@@ -12,5 +12,9 @@ jobs:
   Liatrio-endpoint-test:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout Repo Code
+        uses: actions/checkout@v4
+      - run: cd ${{ github.workspace }} && docker build . -t liatrioexercise
+      - uses: docker run -d liatrioexercise
       - name: run tests
         uses: liatrio/github-actions/apprentice-action@master
