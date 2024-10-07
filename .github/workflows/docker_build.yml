@@ -1,1 +1,8 @@
 name: Docker build
+run-name: Docker build test
+on: [push]
+jobs:
+  Build-Docker-container:
+    runs-on: ubuntu-latest
+    steps:
+      - run: cd ${{ github.workspace }} && docker build . -t liatrioexercise
