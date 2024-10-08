@@ -2,19 +2,12 @@ name: Docker build
 run-name: Docker build test
 on: [push]
 jobs:
-  Build-Docker-container:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Repo Code
-        uses: actions/checkout@v4
-      - run: cd ${{ github.workspace }} && docker build . -t liatrioex
-
   Liatrio-endpoint-test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repo Code
         uses: actions/checkout@v4
-      - run: cd ${{ github.workspace }} && docker build . -t liatrioex
+      - run: cd ${{ github.workspace }} && docker build --build-arg commitversion=${{ github.sha }} . -t liatrioex
       - run: docker run -d -p 80:80 liatrioex
       - run: docker logs $(docker ps -q)
       - run: sleep 1
@@ -24,6 +17,7 @@ jobs:
         uses: liatrio/github-actions/apprentice-action@0b41561cca6822cc8d880fe0e49e7807a41fdf91 # before minified json test
 
   Publish-to-dockerhub:
+    needs: Liatrio-endpoint-test
     name: Push docker image to hub
     runs-on: ubuntu-latest
     permissions:
@@ -55,3 +49,5 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            commitversion=${{ github.sha }}
