@@ -15,7 +15,8 @@ jobs:
       - name: Checkout Repo Code
         uses: actions/checkout@v4
       - run: cd ${{ github.workspace }} && docker build . -t liatrioexercise
-      - run: docker run -dit -p 80:80 liatrioexercise
+      - run: docker run -dit --net=host liatrioexercise
       - run: docker container ls
+      - run: curl localhost/
       - name: run tests
-        uses: liatrio/github-actions/apprentice-action@7208146c9ce4749b4ff44ff8030d953a578fa209
+        uses: liatrio/github-actions/apprentice-action@7208146c9ce4749b4ff44ff8030d953a578fa209 # full sha commit
