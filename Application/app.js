@@ -6,6 +6,6 @@ app.get('/', (req, res) => {
   res.send({ "message": "My name is Kadyn", "timestamp": Date.now() })
 })
 
-app.listen(port, () => {
+app.listen(port, '0.0.0.0', () => {
   console.log(`Listening on port ${port}`)
 })
