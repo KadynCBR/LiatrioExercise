@@ -21,4 +21,38 @@ jobs:
       - run: docker logs $(docker ps -q)
       - run: curl 172.17.0.1
       - name: run tests
-        uses: liatrio/github-actions/apprentice-action@7208146c9ce4749b4ff44ff8030d953a578fa209 # full sha commit
+        uses: liatrio/github-actions/apprentice-action@0b41561cca6822cc8d880fe0e49e7807a41fdf91 # before minified json test
+
+
+  # Publish-to-dockerhub:
+  #   name: Push docker image to hub
+  #   runs-on: ubuntu-latest
+  #   permissions:
+  #     packages: write
+  #     contents: read
+  #     id-token: write
+  #   steps:
+  #     - name: Checkout Repo Code
+  #       uses: actions/checkout@v4
+
+  #     - name: Log in to Docker Hub
+  #       uses: docker/login-action@9780b0c442fbb1117ed29e0efdff1e18412f7567
+  #       with:
+  #         username: ${{ secrets.DOCKER_USERNAME }}
+  #         password: ${{ secrets.DOCKER_PASSWORD }}
+
+  #     - name: Extract metadata (tags, labels) for Docker
+  #       id: meta
+  #       uses: docker/metadata-action@818d4b7b91585d195f67373fd9cb0332e31a7175
+  #       with:
+  #         images: cbrkadyn/apprenticetest
+
+  #     - name: Build and push Docker image
+  #       id: push
+  #       uses: docker/build-push-action@4f58ea79222b3b9dc2c8bbdd6debcef730109a75
+  #       with:
+  #         context: .
+  #         file: ./Dockerfile
+  #         push: true
+  #         tags: ${{ steps.meta.outputs.tags }}
+  #         labels: ${{ steps.meta.outputs.labels }}
