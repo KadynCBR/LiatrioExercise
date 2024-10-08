@@ -15,7 +15,7 @@ jobs:
       - name: Checkout Repo Code
         uses: actions/checkout@v4
       - run: cd ${{ github.workspace }} && docker build . -t liatrioex
-      - run: docker run -it -p 80:80 liatrioex
+      - run: docker run -d -p 80:80 liatrioex && curl 172.17.0.1
       - run: docker container ls
       - run: curl 172.17.0.1
       - name: run tests

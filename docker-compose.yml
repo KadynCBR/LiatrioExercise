@@ -1,7 +1,0 @@
-services:
-  liatrioexercise:
-    build: .
-    ports:
-      - 80:80
-    working_dir: /app
-    command: node app.js
