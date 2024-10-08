@@ -50,3 +50,15 @@ https://github.com/KadynCBR/LiatrioExercise
 1. Dockerfile
   - 
 2. Node + express Application
+
+
+
+
+--- 
+Struggles:
+- No introspection into github actions (no ssh in without tmate or otherwise.)
+  - used other run steps to debug out.
+- steps not passing?
+  1. NPM install wasn't in docker container,  <wa> 
+  2. steps running too quickly, running -d and then immediately moving to next step (curl or tests) would fail. adding a sleep helped
+  3. final step just throws error, could use previous step which was complete. 
