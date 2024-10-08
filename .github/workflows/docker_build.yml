@@ -16,9 +16,8 @@ jobs:
         uses: actions/checkout@v4
       - run: cd ${{ github.workspace }} && docker build . -t liatrioex
       - run: docker run -d -p 80:80 liatrioex
-      - run: sleep 5
       - run: docker logs $(docker ps -q)
-      - run: docker container ls
+      - run: sleep 2
       - run: curl 172.17.0.1
       - name: run tests
         uses: liatrio/github-actions/apprentice-action@7208146c9ce4749b4ff44ff8030d953a578fa209 # full sha commit
