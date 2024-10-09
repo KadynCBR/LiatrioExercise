@@ -69,5 +69,6 @@ Struggles:
   2. Regular Google Cloud Compute VM, ssh in, and perform docker stop, docker pull docker run. (Ol' reliable but I wonder if there's a better way, with all this IAAS flying around.)
      - Feels kind of ick too, essentially just a bash script running commands, prone to error due to its "static" ness
      - simple and verbose
+     - very rigid, if something fails its not very error proof.
   3. Ansible deployment
      - 
