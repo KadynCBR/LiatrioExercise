@@ -1,8 +1,8 @@
 FROM node:lts-slim
-ARG commitversion
 ARG commitversion=1
+ENV COMMITVERSION=$commitversion
 RUN mkdir /app
 COPY ./Application /app
 WORKDIR /app
 RUN npm install
-CMD COMMITVERSION=$commitversion node app.js
+CMD node app.js
