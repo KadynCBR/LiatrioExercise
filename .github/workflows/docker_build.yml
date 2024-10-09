@@ -59,25 +59,47 @@ jobs:
     needs: Publish-to-dockerhub
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repo Code
-        uses: actions/checkout@v4
-
-      - name: Install ansible
-        shell: bash
-        run: |
-          sudo apt update
-          sudo apt install -y ansible
-
       - name: create private key
         shell: bash
         run: |
           echo "${{ secrets.SSHPRIVATEKEY }}" >> .id_rsa
-
-      - name: create service file
+      - name: SSH- docker container stop and remove
         shell: bash
         run: |
-          echo "${{ secrets.GCP_SERVICE_ACCOUNT }}" >> ./credential.json
-
-      - name: Run playbook
+          ssh root@${{ secrets.VM_IP }} "docker container stop liatrioex && docker container rm liatrioex"
+      - name: SSH- docker container pull latest
+        shell: bash
         run: |
-          ansible-playbook playbooks/gcp_autodeploy.yml --key-file ./id_rsa
+          ssh root@${{ secrets.VM_IP }} "docker pull cbrkadyn/apprenticetest"
+      - name: SSH- docker container run
+        shell: bash
+        run: |
+          ssh root@${{ secrets.VM_IP }} "docker run -dit -p 80:80 liatrioex"
+
+  # Auto_deploy:
+  #   name: Auto Provision and deploy
+  #   needs: Publish-to-dockerhub
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout Repo Code
+  #       uses: actions/checkout@v4
+
+  #     - name: Install ansible
+  #       shell: bash
+  #       run: |
+  #         sudo apt update
+  #         sudo apt install -y ansible
+
+  #     - name: create private key
+  #       shell: bash
+  #       run: |
+  #         echo "${{ secrets.SSHPRIVATEKEY }}" >> .id_rsa
+
+  #     - name: create service file
+  #       shell: bash
+  #       run: |
+  #         echo "${{ secrets.GCP_SERVICE_ACCOUNT }}" >> ./credential.json
+
+  #     - name: Run playbook
+  #       run: |
+  #         ansible-playbook playbooks/gcp_autodeploy.yml --key-file ./id_rsa
