@@ -76,7 +76,7 @@ jobs:
       - name: create service file
         shell: bash
         run: |
-          echo "${{ secrets.GCP_SERVICE_ACCOUNT }}" >> /credential.json
+          echo "${{ secrets.GCP_SERVICE_ACCOUNT }}" >> ./credential.json
 
       - name: Run playbook
         run: |
