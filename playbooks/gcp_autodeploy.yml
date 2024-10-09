@@ -1,27 +1,26 @@
-# must run with ansible-playbook gcp_microservice.yml --user cherry --key-file ./id_rsa
 - name: Create an instance
   hosts: localhost
   gather_facts: False
   vars:
     gcp_project: ancient-torch-436214-b3
+    gcp_cred_file: /credential.json
     gcp_cred_kind: serviceaccount
-    gcp_cred_file: /app/csci644-436214-b3-e774605234e9.json
     zone: "us-central1-a"
     region: "us-central1"
-    vm_name: liatro-test-vm
+    vm_name: liatro-test-vm2
 
   tasks:
     - name: create an instance
       gcp_compute_instance:
         state: present
-        name: ${{ vm_name }}
+        name: "{{ vm_name }}"
         machine_type: e2-micro
         disks:
           - auto_delete: true
-            device_name: ${{ vm_name }}-disk-device
+            device_name: "{{ vm_name }}-disk-device"
             boot: true
             initialize_params:
-              disk_name: ${{ vm_name }}-disk
+              disk_name: "{{ vm_name }}-disk"
               disk_type: pd-standard
               disk_size_gb: 10
               source_image: projects/ubuntu-os-cloud/global/images/ubuntu-2204-jammy-v20240904
@@ -31,10 +30,12 @@
               - name: "External NAT"
                 network_tier: "STANDARD"
                 type: "ONE_TO_ONE_NAT"
+        metadata:
+          ssh-keys: "root:ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDeSai95lQzXuhviTKA7WABOktTMrBwt76ON208UZfDs62334OTm0t1/W1SHw++sdvSXynwfs8zOoaaKdkRDt22f3i1cSc0gcsKtzoBg0UNzPEYAzdl8L03o/fOpL0HZxKW5dBXo/l7FpFyRUy62gKbeMGJQh01Jx6o0Wp6laCLb04a5Zd4mwZHcyMNq0PmfnZ20wg74EPSgMoF/J9crrlR7QNpg74juZA4vnNyL6dorb1w093kLZeWOnR+nGP7vd9UekTDy0naE865y09JZfTW0qwrXwzcCOwD1LPV1hrSRQxxkxY9HMX/eJTviZpZbTJ3GS1XfxB47vwEU6JsD6BvdD/aFelzYYnxTb57F8neZvpCG3jT6AQ6fWe6amblTXV9tbDC8DmXH3BCKL+OWgUw6uOp1EyiO7EQhLsnnNPB+vjgWvLOPXK4Um/X2Hjso1IFTIj2N/cjbWhSibFnpFISFBqo0H5FUBISPAs3qdYBfBOPt3jtIWiiXnjN3uLAhrmtJtQ/XSOBKKrCu1GkFBxku4Xj4t8OfYO44TYnt+6vQD3f6pMy3eoGaNiItFMny67o37R7R3E//YQ0viXsGeQ8lwgBPvqsz4vOcdXPBlN2rAQP2M2cuGJ/NDCwqc/Ds/NhQfv8uOgfsgiEf/aVyFlR6pGR7V8me8GS/sCti3IE7Q== gclouddocker"
         zone: "{{ zone }}"
         project: "{{ gcp_project }}"
         auth_kind: "{{ gcp_cred_kind }}"
-        service_account_contents: "{{ gcp_cred_contents }}"
+        service_account_file: "{{ gcp_cred_file }}"
         tags:
           items:
             - http-server
@@ -100,14 +101,15 @@
         name: docker
 
     - name: Pull docker container
-      community.docker.docker_image:
-        name: cbrkadyn/apprenticetest
-        source: pull
+      ansible.builtin.shell:
+        cmd: docker pull cbrkadyn/apprenticetest
 
     - name: Pull and run latest docker image
       community.docker.docker_container:
         name: liatrioex
         image: cbrkadyn/apprenticetest
-        state: present
-        exposed_ports: 80
+        state: started
+        ports:
+          - "80:80"
         recreate: yes
+        detach: yes
