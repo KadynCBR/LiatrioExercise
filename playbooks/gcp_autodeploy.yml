@@ -3,7 +3,7 @@
   gather_facts: False
   vars:
     gcp_project: ancient-torch-436214-b3
-    gcp_cred_file: /credential.json
+    gcp_cred_file: ./credential.json
     gcp_cred_kind: serviceaccount
     zone: "us-central1-a"
     region: "us-central1"
