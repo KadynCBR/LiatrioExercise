@@ -62,7 +62,7 @@ jobs:
       - name: create private key
         shell: bash
         run: |
-          echo "${{ secrets.SSHPRIVATEKEY }}" >> ./id_rsa
+          echo "${{ secrets.SSHPRIVATEKEY }}" >> ./id_rsa && chmod 600 ./id_rsa
       - name: SSH- docker container stop and remove
         shell: bash
         run: |
