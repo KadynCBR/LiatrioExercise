@@ -1,0 +1,113 @@
+# must run with ansible-playbook gcp_microservice.yml --user cherry --key-file ./id_rsa
+- name: Create an instance
+  hosts: localhost
+  gather_facts: False
+  vars:
+    gcp_project: ancient-torch-436214-b3
+    gcp_cred_kind: serviceaccount
+    gcp_cred_file: /app/csci644-436214-b3-e774605234e9.json
+    zone: "us-central1-a"
+    region: "us-central1"
+    vm_name: liatro-test-vm
+
+  tasks:
+    - name: create an instance
+      gcp_compute_instance:
+        state: present
+        name: ${{ vm_name }}
+        machine_type: e2-micro
+        disks:
+          - auto_delete: true
+            device_name: ${{ vm_name }}-disk-device
+            boot: true
+            initialize_params:
+              disk_name: ${{ vm_name }}-disk
+              disk_type: pd-standard
+              disk_size_gb: 10
+              source_image: projects/ubuntu-os-cloud/global/images/ubuntu-2204-jammy-v20240904
+        network_interfaces:
+          - network: null
+            access_configs:
+              - name: "External NAT"
+                network_tier: "STANDARD"
+                type: "ONE_TO_ONE_NAT"
+        zone: "{{ zone }}"
+        project: "{{ gcp_project }}"
+        auth_kind: "{{ gcp_cred_kind }}"
+        service_account_contents: "{{ gcp_cred_contents }}"
+        tags:
+          items:
+            - http-server
+            - https-server
+        scopes:
+          - https://www.googleapis.com/auth/compute
+      register: instance
+
+    - name: wait for ssh
+      wait_for: host={{ instance.networkInterfaces[0].accessConfigs[0].natIP }} port=22 delay=10
+
+    - name: Add host to groupname
+      add_host: hostname={{ instance.networkInterfaces[0].accessConfigs[0].natIP }} groupname=new_instances
+
+- name: Manage new instance
+  hosts: new_instances
+  connection: ssh
+  gather_facts: False
+  become: True
+  # Add host to known hosts to prevent blocking confirmation
+  pre_tasks:
+    - name: Create a ssh directory for root
+      connection: local
+      ansible.builtin.file:
+        path: /root/.ssh
+        state: directory
+        mode: "0755"
+    - name: Write the new instance host key to known hosts
+      connection: local
+      shell: "ssh-keyscan -H {{ inventory_hostname }} >> ~/.ssh/known_hosts"
+  tasks:
+    - name: Install required system packages
+      apt:
+        pkg:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - software-properties-common
+          - python3-pip
+          - virtualenv
+          - python3-setuptools
+        state: latest
+        update_cache: true
+
+    - name: Add Docker GPG apt Key
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: Add Docker Repository
+      apt_repository:
+        repo: deb https://download.docker.com/linux/ubuntu jammy stable
+        state: present
+
+    - name: Update apt and install docker-ce
+      apt:
+        name: docker-ce
+        state: latest
+        update_cache: true
+
+    - name: Install Docker Module for Python
+      pip:
+        name: docker
+
+    - name: Pull docker container
+      community.docker.docker_image:
+        name: cbrkadyn/apprenticetest
+        source: pull
+
+    - name: Pull and run latest docker image
+      community.docker.docker_container:
+        name: liatrioex
+        image: cbrkadyn/apprenticetest
+        state: present
+        exposed_ports: 80
+        recreate: yes

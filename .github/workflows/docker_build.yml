@@ -51,3 +51,23 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
             commitversion=${{ github.sha }}
+
+  # Auto_deploy:
+  #   name: Auto Provision and deploy
+  #   needs: Publish-to-dockerhub
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout Repo Code
+  #       uses: actions/checkout@v4
+
+  #     - name: Install ansible
+  #       shell: bash
+  #       run: |
+  #         sudo apt update
+  #         sudo apt install -y ansible
+
+  #     - name: Run playbook
+  #       env:
+  #         SECRETSHERE: hi.
+  #       run: |
+  #         ansible-playbook playbooks/gcp_autodeploy.yml

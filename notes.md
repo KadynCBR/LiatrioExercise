@@ -62,3 +62,12 @@ Struggles:
   1. NPM install wasn't in docker container,  <wa> 
   2. steps running too quickly, running -d and then immediately moving to next step (curl or tests) would fail. adding a sleep helped
   3. final step just throws error, could use previous step which was complete. 
+- Deployment tradeoffs
+  1. Google cloud run (but you need the image to be on google container repository to play nice. I could add another workflow step that uploads to google container repository as well, but this feels kind of bad.)
+     - Essentially needing to duplicate 
+     - needing to conform to their IAAS
+  2. Regular Google Cloud Compute VM, ssh in, and perform docker stop, docker pull docker run. (Ol' reliable but I wonder if there's a better way, with all this IAAS flying around.)
+     - Feels kind of ick too, essentially just a bash script running commands, prone to error due to its "static" ness
+     - simple and verbose
+  3. Ansible deployment
+     - 
