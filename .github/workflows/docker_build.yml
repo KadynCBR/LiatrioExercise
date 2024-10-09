@@ -74,7 +74,7 @@ jobs:
       - name: SSH- docker container run
         shell: bash
         run: |
-          ssh -o StrictHostKeyChecking=no -i ./id_rsa root@${{ secrets.VM_IP }} "docker run -dit -p 80:80 liatrioex"
+          ssh -o StrictHostKeyChecking=no -i ./id_rsa root@${{ secrets.VM_IP }} "docker run -dit -p 80:80 cbrkadyn/apprenticetest --name liatrioex"
 
   # Auto_deploy:
   #   name: Auto Provision and deploy
