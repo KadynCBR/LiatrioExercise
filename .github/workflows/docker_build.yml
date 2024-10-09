@@ -66,15 +66,15 @@ jobs:
       - name: SSH- docker container stop and remove
         shell: bash
         run: |
-          ssh root@${{ secrets.VM_IP }} "docker container stop liatrioex && docker container rm liatrioex"
+          ssh -i ./id_rsa root@${{ secrets.VM_IP }} "docker container stop liatrioex && docker container rm liatrioex"
       - name: SSH- docker container pull latest
         shell: bash
         run: |
-          ssh root@${{ secrets.VM_IP }} "docker pull cbrkadyn/apprenticetest"
+          ssh -i ./id_rsa root@${{ secrets.VM_IP }} "docker pull cbrkadyn/apprenticetest"
       - name: SSH- docker container run
         shell: bash
         run: |
-          ssh root@${{ secrets.VM_IP }} "docker run -dit -p 80:80 liatrioex"
+          ssh -i ./id_rsa root@${{ secrets.VM_IP }} "docker run -dit -p 80:80 liatrioex"
 
   # Auto_deploy:
   #   name: Auto Provision and deploy

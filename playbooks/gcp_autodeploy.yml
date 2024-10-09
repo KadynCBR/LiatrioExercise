@@ -7,7 +7,7 @@
     gcp_cred_kind: serviceaccount
     zone: "us-central1-a"
     region: "us-central1"
-    vm_name: liatro-test-vm2
+    vm_name: liatro-test-vm0
 
   tasks:
     - name: create an instance
