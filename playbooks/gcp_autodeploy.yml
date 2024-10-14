@@ -60,7 +60,7 @@
     - name: Create a ssh directory for root
       connection: local
       ansible.builtin.file:
-        path: /root/.ssh
+        path: ~/.ssh
         state: directory
         mode: "0755"
     - name: Write the new instance host key to known hosts
