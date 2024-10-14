@@ -55,17 +55,17 @@
   connection: ssh
   gather_facts: False
   become: True
-  # Add host to known hosts to prevent blocking confirmation
-  pre_tasks:
-    - name: Create a ssh directory for root
-      connection: local
-      ansible.builtin.file:
-        path: ~/.ssh
-        state: directory
-        mode: "0755"
-    - name: Write the new instance host key to known hosts
-      connection: local
-      shell: "ssh-keyscan -H {{ inventory_hostname }} >> ~/.ssh/known_hosts"
+  # # Add host to known hosts to prevent blocking confirmation
+  # pre_tasks:
+  #   - name: Create a ssh directory for root
+  #     connection: local
+  #     ansible.builtin.file:
+  #       path: ~/.ssh
+  #       state: directory
+  #       mode: "0755"
+  #   - name: Write the new instance host key to known hosts
+  #     connection: local
+  #     shell: "ssh-keyscan -H {{ inventory_hostname }} >> ~/.ssh/known_hosts"
   tasks:
     - name: Install required system packages
       apt:
