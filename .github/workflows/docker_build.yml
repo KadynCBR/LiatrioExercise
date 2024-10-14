@@ -92,6 +92,9 @@ jobs:
           apt update
           apt install -y python3 python3-dev python3-venv python3-pip wget ansible
 
+      - name: Change ownership of /github/home
+        run: chown -R $(whoami) /github/home
+
       - name: Install pip Requirements
         shell: bash
         run: |
