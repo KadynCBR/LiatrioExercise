@@ -89,8 +89,8 @@ jobs:
       - name: Install ansible
         shell: bash
         run: |
-          sudo apt update
-          sudo apt install -y ansible
+          apt update
+          apt install -y ansible
 
       - name: create private key
         shell: bash
