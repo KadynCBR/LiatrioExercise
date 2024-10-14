@@ -55,7 +55,7 @@ jobs:
             commitversion=${{ github.sha }}
 
   Auto_deploy:
-    name: Auto Provision and deploy
+    name: Auto deploy
     needs: Publish-to-dockerhub
     runs-on: ubuntu-latest
     steps:
@@ -76,30 +76,32 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=no -i ./id_rsa root@${{ secrets.VM_IP }} "docker run -dit -p 80:80 --name liatrioex cbrkadyn/apprenticetest"
 
-  # Auto_deploy:
-  #   name: Auto Provision and deploy
-  #   needs: Publish-to-dockerhub
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout Repo Code
-  #       uses: actions/checkout@v4
+  Auto_deploy_ansible:
+    name: Auto Provision and deploy using ansible
+    needs: Publish-to-dockerhub
+    runs-on: ubuntu-latest
+    container:
+      image: gcr.io/google.com/cloudsdktool/google-cloud-cli:489.0.0-stable
+    steps:
+      - name: Checkout Repo Code
+        uses: actions/checkout@v4
 
-  #     - name: Install ansible
-  #       shell: bash
-  #       run: |
-  #         sudo apt update
-  #         sudo apt install -y ansible
+      - name: Install ansible
+        shell: bash
+        run: |
+          sudo apt update
+          sudo apt install -y ansible
 
-  #     - name: create private key
-  #       shell: bash
-  #       run: |
-  #         echo "${{ secrets.SSHPRIVATEKEY }}" >> .id_rsa
+      - name: create private key
+        shell: bash
+        run: |
+          echo "${{ secrets.SSHPRIVATEKEY }}" >> .id_rsa
 
-  #     - name: create service file
-  #       shell: bash
-  #       run: |
-  #         echo "${{ secrets.GCP_SERVICE_ACCOUNT }}" >> ./credential.json
+      - name: create service file
+        shell: bash
+        run: |
+          echo "${{ secrets.GCP_SERVICE_ACCOUNT }}" >> ./credential.json
 
-  #     - name: Run playbook
-  #       run: |
-  #         ansible-playbook playbooks/gcp_autodeploy.yml --key-file ./id_rsa
+      - name: Run playbook
+        run: |
+          ansible-playbook playbooks/gcp_autodeploy.yml --key-file ./id_rsa
