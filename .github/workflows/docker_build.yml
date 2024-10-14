@@ -103,7 +103,7 @@ jobs:
       - name: create private key
         shell: bash
         run: |
-          echo "${{ secrets.SSHPRIVATEKEY }}" >> .id_rsa
+          echo "${{ secrets.SSHPRIVATEKEY }}" >> ./id_rsa && chmod 600 ./id_rsa
 
       - name: create service file
         shell: bash
@@ -113,4 +113,4 @@ jobs:
       - name: Run playbook
         run: |
           . ./venv/bin/activate
-          ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook playbooks/gcp_autodeploy.yml --key-file .id_rsa
+          ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook playbooks/gcp_autodeploy.yml --key-file id_rsa
