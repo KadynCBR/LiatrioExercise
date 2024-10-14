@@ -97,7 +97,7 @@ jobs:
         run: |
           python3 -m venv ./venv
           . ./venv/bin/activate
-          pip install google-cloud-compute==1.19.0 ansible google-auth google-api-python-client google-cloud-sdk
+          pip install google-cloud-compute==1.19.0 ansible google-auth google-api-python-client
           ansible-galaxy collection install google.cloud
 
       - name: create private key
