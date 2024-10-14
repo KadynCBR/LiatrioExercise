@@ -97,7 +97,8 @@ jobs:
         run: |
           python3 -m venv ./venv
           . ./venv/bin/activate
-          pip install google-cloud-compute==1.19.0 ansible
+          pip install google-cloud-compute==1.19.0 ansible google-auth google-api-python-client google-cloud-sdk
+          ansible-galaxy collection install google.cloud
 
       - name: create private key
         shell: bash
@@ -112,4 +113,4 @@ jobs:
       - name: Run playbook
         run: |
           . ./venv/bin/activate
-          ansible-playbook playbooks/gcp_autodeploy.yml --key-file ./id_rsa
+          ansible-playbook playbooks/gcp_autodeploy.yml --key-file ./id_rsa -vvv
