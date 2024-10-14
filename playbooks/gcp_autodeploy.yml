@@ -63,9 +63,7 @@
           - ca-certificates
           - curl
           - software-properties-common
-          - python3-pip
-          - python3-setuptools
-        state: latest
+        state: present
         update_cache: true
 
     - name: Add Docker GPG apt Key
@@ -81,7 +79,7 @@
     - name: Update apt and install docker-ce
       apt:
         name: docker-ce
-        state: latest
+        state: present
         update_cache: true
 
     - name: Install Docker Module for Python
