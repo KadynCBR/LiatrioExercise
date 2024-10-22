@@ -3,11 +3,11 @@
   gather_facts: False
   vars:
     gcp_project: ancient-torch-436214-b3
-    gcp_cred_file: /credential.json
+    gcp_cred_file: ../credential.json
     gcp_cred_kind: serviceaccount
     zone: "us-central1-a"
     region: "us-central1"
-    vm_name: liatro-test-vm2
+    vm_name: liatro-test-vm0
 
   tasks:
     - name: create an instance
@@ -55,17 +55,6 @@
   connection: ssh
   gather_facts: False
   become: True
-  # Add host to known hosts to prevent blocking confirmation
-  pre_tasks:
-    - name: Create a ssh directory for root
-      connection: local
-      ansible.builtin.file:
-        path: /root/.ssh
-        state: directory
-        mode: "0755"
-    - name: Write the new instance host key to known hosts
-      connection: local
-      shell: "ssh-keyscan -H {{ inventory_hostname }} >> ~/.ssh/known_hosts"
   tasks:
     - name: Install required system packages
       apt:
@@ -74,10 +63,7 @@
           - ca-certificates
           - curl
           - software-properties-common
-          - python3-pip
-          - virtualenv
-          - python3-setuptools
-        state: latest
+        state: present
         update_cache: true
 
     - name: Add Docker GPG apt Key
@@ -93,7 +79,7 @@
     - name: Update apt and install docker-ce
       apt:
         name: docker-ce
-        state: latest
+        state: present
         update_cache: true
 
     - name: Install Docker Module for Python
